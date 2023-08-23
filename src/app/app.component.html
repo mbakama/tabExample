@@ -311,35 +311,39 @@
   />
   <span>Welcome</span>
     <div class="spacer"></div>
-    <a aria-label="Angular on twitter" target="_blank" rel="noopener" href="https://twitter.com/angular" title="Twitter">
-      <svg id="twitter-logo" height="24" data-name="Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-        <rect width="400" height="400" fill="none"/>
-        <path d="M153.62,301.59c94.34,0,145.94-78.16,145.94-145.94,0-2.22,0-4.43-.15-6.63A104.36,104.36,0,0,0,325,122.47a102.38,102.38,0,0,1-29.46,8.07,51.47,51.47,0,0,0,22.55-28.37,102.79,102.79,0,0,1-32.57,12.45,51.34,51.34,0,0,0-87.41,46.78A145.62,145.62,0,0,1,92.4,107.81a51.33,51.33,0,0,0,15.88,68.47A50.91,50.91,0,0,1,85,169.86c0,.21,0,.43,0,.65a51.31,51.31,0,0,0,41.15,50.28,51.21,51.21,0,0,1-23.16.88,51.35,51.35,0,0,0,47.92,35.62,102.92,102.92,0,0,1-63.7,22A104.41,104.41,0,0,1,75,278.55a145.21,145.21,0,0,0,78.62,23" fill="#fff"/>
-      </svg>
-    </a>
-    <a aria-label="Angular on YouTube" target="_blank" rel="noopener" href="https://youtube.com/angular" title="YouTube">
-      <svg id="youtube-logo" height="24" width="24" data-name="Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
-        <path d="M0 0h24v24H0V0z" fill="none"/>
-        <path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/>
-      </svg>
-    </a>
 </div>
 
 <div class="content" role="main">
 
-  <form>
-    <!-- <input type="checkbox" (change)="onCheckboxChangedOne($event.target!.checked)"> -->
-    <!-- <input type="text" formControlName="numero" class="form-control"> <br> -->
-    <!-- <input type="checkbox" (change)="onCheckboxChangedOne(($event.target as HTMLInputElement).checked)"> -->
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [checked]="isChecked" (change)="onCheckboxChange(checkbox.checked)" #checkbox>
-     
-    </div>
-    <button type="submit" class="btn btn-info mb-5">envoi</button>
-  </form>
-  <form [formGroup]="rechercheForm">
-    <!-- <input type="text" class="form-control" formControlName="referenceTitrePerception" placeholder="Référence du Titre de Perception">
-    <button class="btn btn-info mt-2" type="submit">Rechercher</button> -->
+  <form [formGroup]="rechercheForm" (ngSubmit)="SaveData()">
+
+    <div class="border border-dark rounded p-2" style="margin: 4px 4px; font-size: 12px">
+      <div class="row">
+        <div class="col-md-5 col-sm-4">
+         
+              <div class="input-group">
+                <input type="text" class="form-control" formControlName="nif" placeholder="Veuillez inserer le NIF de l'assujetti" aria-label="Amount (to the nearest dollar)">
+                <button type="button" (click)="AfficherContribuable()" class="btn btn-success btn-sm">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>               
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <span>Noms de l'assujetti :&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="fw-bold">{{ nomAssujetti }}</span> </span>&nbsp;&nbsp;&nbsp;&nbsp;<br />
+          <span>Type :&nbsp;&nbsp;<span class="fw-bold">{{
+              typepersonne
+              }}</span> </span><br /><span>NIF :&nbsp; <span class="fw-bold">{{ nif }}</span> </span><br />
+          <span>Adresse :&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="fw-bold">{{ adresseAssujetti }}</span>
+          </span>
+          &nbsp;&nbsp;
+        </div>
+      </div>
+      </div>
+
+
+    <hr>
     <div class="input-group">
       <select  class="form-select form-select-sm" id="">
         <option value="null" disabled>Veuillez selectionner le type de document à rechercher</option>
@@ -352,7 +356,7 @@
         Recherche / Ajouter
       </button>
     </div>
-  </form>
+ 
   
   <table class="table table-bordered mt-4">
     <thead>
@@ -363,19 +367,34 @@
         <th>Montant Contesté</th>
         <th>Devise</th>
         <th>Avec Sursis</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let resultat of resultatsRecherches">
+      <tr *ngFor="let resultat of resultatsRecherches; let i = index">
         <td>{{ resultat.referenceTitrePerception }}</td>
-        <td>{{ resultat.motifivationRecours }}</td>
-        <td>{{ resultat.dateDecision }}</td>
-        <td>{{ resultat.montantConteste }}</td>
+        <td> {{ resultat.motifivationRecours }}</td>
+        <td>{{ resultat.montantNonConteste }}</td>
+        <td><input type="text" formControlName="montantConteste" [ngModel]="resultat.montantConteste"></td>
         <td>{{ resultat.devise }}</td>
-        <td>{{ resultat.avecSurcis }}</td>
+        <td>      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [checked]="avecSurcis" (change)="onCheckboxChange(checkbox.checked)" #checkbox>
+        </td>
+        <td>
+          <i class="mdi mdi-delete text-danger" style="font-size: 20px" (click)="removeDetailEdit(resultat.referenceTitrePerception)"></i>
+          <button class="btn btn-danger" type="submit" (click)="removeDetailEdit(resultat.referenceTitrePerception)">supprimer</button>
+        </td>
       </tr>
     </tbody>
   </table>
+
+  <input type="text" class="form-control"  formControlName="referenceCourrier"><br>
+  <textarea name="" class="form-control" formControlName="observation" id="" cols="30" rows="4"></textarea><br>
+
+  <button type="submit" class="btn"
+  style="background-color: rgb(69, 171, 225); color: #fff; border-radius: 5px;" name="ajouter">
+  Enregistrer
+</button>
+  </form>
   <!-- <form [formGroup]="rechercheForm" (ngSubmit)="onSubmit()">
     <input type="text" formControlName="referenceTitrePerception" class="form-control" placeholder="Référence du Titre de Perception">
     <button type="submit">Rechercher</button>
