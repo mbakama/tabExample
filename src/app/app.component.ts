@@ -26,11 +26,13 @@ export class AppComponent implements OnInit {
   montantDu: any;
   avecSurcisValue: any;
   devise: any;
+  montantsContestesModifies: { referenceTitrePerception: string, montantConteste: number }[] = [];
   fkActeGenerateur: any;
   intituleActeGenerateur: any;
   private resultatRecherche: any;
   // rechercheForm: FormGroup;
   // rechercheForm: FormBuilder;
+  ngOnInit(): void {}
   constructor(
     private apiService: ServiceService,
     private builder: FormBuilder
@@ -88,7 +90,41 @@ export class AppComponent implements OnInit {
   }
 
   SaveData() {
-    const details: any[] = [];
+    const details: any[] = []; 
+      // this.montantsContestesModifies = [];
+    
+      // for (const element of this.resultatsRecherches) {
+      //   const montantContesteControl = this.rechercheForm.get('detailsReclamation.' + element.referenceTitrePerception + '.montantConteste');
+    
+      //   if (montantContesteControl && montantContesteControl.dirty && montantContesteControl.valid) {
+      //     const montantContesteValue = montantContesteControl.value;
+      //     this.montantsContestesModifies.push({
+      //       referenceTitrePerception: element.referenceTitrePerception,
+      //       montantConteste: montantContesteValue
+            
+            
+      //     });
+      //     console.log(montantContesteControl);
+      //   }
+      // } 
+    
+      // Utilisez le tableau montantsContestesModifies selon vos besoins, par exemple, envoyez-le à une API ou effectuez d'autres opérations.
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     for (const element of this.resultatsRecherches) {
       const item = {
         montantConteste: this.rechercheForm.controls.montantConteste.value,
@@ -107,22 +143,7 @@ export class AppComponent implements OnInit {
       };
       details.push(item);
     }
-    // const details: any[] = this.resultatsRecherches.map((element: any) => {
-    //   const item = {
-    //     montantConteste: this.rechercheForm.controls.montantConteste.value,
-    //     // Ajoutez d'autres propriétés à extraire de chaque élément selon vos besoins
-    //   };
-    //   return item;
-    // })
-    // console.log(details);
-    // const details: any = [];
-
-    // const item = {
-    //   montantConteste : this.resultatsRecherches.montantConteste
-    // }
-    // this.montantConteste = this.rechercheForm.controls.montantConteste.value;
-    // console.log(this.montantConteste);
-    // details.push(item);
+   
 
     let stDs = details;
     const request = {
@@ -181,6 +202,8 @@ export class AppComponent implements OnInit {
           montantNonConteste: resultat.data.montantNonConteste,
           montantConteste: resultat.data.montantConteste,
           devise: resultat.data.devise,
+          montantDu:resultat.data.montantDu,
+          typedocument:resultat.data.typeDocument,
           intituleActeGenerateur : resultat.data.intituleActeGenerateur,
           avecSurcis: resultat.data.avecSurcis,
         };
@@ -200,7 +223,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  
 
   onCheckboxChange(checked: boolean) {
     const value = checked ? 1 : 0;
