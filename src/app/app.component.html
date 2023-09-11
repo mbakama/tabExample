@@ -7,326 +7,42 @@
 <!-- * * * * * * * to get started with your project! * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
-<style>
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 8px 0;
-  }
-
-  p {
-    margin: 0;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
-  .toolbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background-color: #1976d2;
-    color: white;
-    font-weight: 600;
-  }
-
-  .toolbar img {
-    margin: 0 16px;
-  }
-
-  .toolbar #twitter-logo {
-    height: 40px;
-    margin: 0 8px;
-  }
-
-  .toolbar #youtube-logo {
-    height: 40px;
-    margin: 0 16px;
-  }
-
-  .toolbar #twitter-logo:hover,
-  .toolbar #youtube-logo:hover {
-    opacity: 0.8;
-  }
-
-  .content {
-    display: flex;
-    margin: 82px auto 32px;
-    padding: 0 16px;
-    max-width: 960px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  svg.material-icons {
-    height: 24px;
-    width: auto;
-  }
-
-  svg.material-icons:not(:last-child) {
-    margin-right: 8px;
-  }
-
-  .card svg.material-icons path {
-    fill: #888;
-  }
-
-  .card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 16px;
-  }
-
-  .card {
-    all: unset;
-    border-radius: 4px;
-    border: 1px solid #eee;
-    background-color: #fafafa;
-    height: 40px;
-    width: 200px;
-    margin: 0 8px 16px;
-    padding: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.2s ease-in-out;
-    line-height: 24px;
-  }
-
-  .card-container .card:not(:last-child) {
-    margin-right: 0;
-  }
-
-  .card.card-small {
-    height: 16px;
-    width: 168px;
-  }
-
-  .card-container .card:not(.highlight-card) {
-    cursor: pointer;
-  }
-
-  .card-container .card:not(.highlight-card):hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 17px rgba(0, 0, 0, 0.35);
-  }
-
-  .card-container .card:not(.highlight-card):hover .material-icons path {
-    fill: rgb(105, 103, 103);
-  }
-
-  .card.highlight-card {
-    background-color: #1976d2;
-    color: white;
-    font-weight: 600;
-    border: none;
-    width: auto;
-    min-width: 30%;
-    position: relative;
-  }
-
-  .card.card.highlight-card span {
-    margin-left: 60px;
-  }
-
-  svg#rocket {
-    width: 80px;
-    position: absolute;
-    left: -10px;
-    top: -24px;
-  }
-
-  svg#rocket-smoke {
-    height: calc(100vh - 95px);
-    position: absolute;
-    top: 10px;
-    right: 180px;
-    z-index: -10;
-  }
-
-  a,
-  a:visited,
-  a:hover {
-    color: #1976d2;
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: #125699;
-  }
-
-  .terminal {
-    position: relative;
-    width: 80%;
-    max-width: 600px;
-    border-radius: 6px;
-    padding-top: 45px;
-    margin-top: 8px;
-    overflow: hidden;
-    background-color: rgb(15, 15, 16);
-  }
-
-  .terminal::before {
-    content: "\2022 \2022 \2022";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 4px;
-    background: rgb(58, 58, 58);
-    color: #c2c3c4;
-    width: 100%;
-    font-size: 2rem;
-    line-height: 0;
-    padding: 14px 0;
-    text-indent: 4px;
-  }
-
-  .terminal pre {
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-    color: white;
-    padding: 0 1rem 1rem;
-    margin: 0;
-  }
-
-  .circle-link {
-    height: 40px;
-    width: 40px;
-    border-radius: 40px;
-    margin: 8px;
-    background-color: white;
-    border: 1px solid #eeeeee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: 1s ease-out;
-  }
-
-  .circle-link:hover {
-    transform: translateY(-0.25rem);
-    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  footer {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    line-height: 20px;
-  }
-
-  footer a {
-    display: flex;
-    align-items: center;
-  }
-
-  .github-star-badge {
-    color: #24292e;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    padding: 3px 10px;
-    border: 1px solid rgba(27,31,35,.2);
-    border-radius: 3px;
-    background-image: linear-gradient(-180deg,#fafbfc,#eff3f6 90%);
-    margin-left: 4px;
-    font-weight: 600;
-  }
-
-  .github-star-badge:hover {
-    background-image: linear-gradient(-180deg,#f0f3f6,#e6ebf1 90%);
-    border-color: rgba(27,31,35,.35);
-    background-position: -.5em;
-  }
-
-  .github-star-badge .material-icons {
-    height: 16px;
-    width: 16px;
-    margin-right: 4px;
-  }
-
-  svg#clouds {
-    position: fixed;
-    bottom: -160px;
-    left: -230px;
-    z-index: -10;
-    width: 1920px;
-  }
-
-  /* Responsive Styles */
-  @media screen and (max-width: 767px) {
-    .card-container > *:not(.circle-link) ,
-    .terminal {
-      width: 100%;
-    }
-
-    .card:not(.highlight-card) {
-      height: 16px;
-      margin: 8px 0;
-    }
-
-    .card.highlight-card span {
-      margin-left: 72px;
-    }
-
-    svg#rocket-smoke {
-      right: 120px;
-      transform: rotate(-5deg);
-    }
-  }
-
-  @media screen and (max-width: 575px) {
-    svg#rocket-smoke {
-      display: none;
-      visibility: hidden;
-    }
-  }
-</style>
 
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
-  <img
-    width="40"
-    alt="Angular Logo"
-    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
-  />
+  <img width="40" alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" />
   <span>Welcome</span>
-    <div class="spacer"></div>
+  <div class="spacer"></div>
 </div>
 
+<br>
 <div class="content" role="main">
+
+  <br>
+
 
   <form [formGroup]="rechercheForm" (ngSubmit)="SaveData()">
 
     <div class="border border-dark rounded p-2" style="margin: 4px 4px; font-size: 12px">
       <div class="row">
         <div class="col-md-5 col-sm-4">
-         
-              <div class="input-group">
-                <input type="text" class="form-control" formControlName="nif" placeholder="Veuillez inserer le NIF de l'assujetti" aria-label="Amount (to the nearest dollar)">
-                <button type="button" (click)="AfficherContribuable()" class="btn btn-success btn-sm">
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>               
+
+          <div class="input-group">
+            <input type="text" class="form-control" formControlName="nif"
+              placeholder="Veuillez inserer le NIF de l'assujetti" aria-label="Amount (to the nearest dollar)">
+            <button type="button" (click)="AfficherContribuable()" [disabled]="isLoading"
+              class="btn btn-success btn-sm">
+              <i class="fas fa-search"></i>
+            </button>
+            <div class="lds-ring" *ngIf="isLoading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+
+          </div>
         </div>
         <div class="col-md-7 col-sm-8">
           <span>Noms de l'assujetti :&nbsp;&nbsp;&nbsp;&nbsp;
@@ -340,87 +56,437 @@
           &nbsp;&nbsp;
         </div>
       </div>
-      </div>
+    </div>
 
 
     <hr>
     <div class="input-group">
-      <select  class="form-select form-select-sm" id="">
+      <select class="form-select form-select-sm" id="">
         <option value="null" disabled>Veuillez selectionner le type de document à rechercher</option>
-        <option value="Declaration" >Declaration</option>
-        <option value="IPR" >IPR </option>
-    </select>
-      <input type="text" class="form-control" formControlName="referenceTitrePerception" placeholder="inserer le numero du document" aria-label="Amount (to the nearest dollar)">
-      <button type="button" (click)="rechercheNumDeclara()" class="btn btn-sm" style="background-color: rgb(69, 171, 225); color: #fff;" name="ajouter">
+        <option value="Declaration">Declaration</option>
+        <option value="IPR">IPR </option>
+      </select>
+      <input type="text" class="form-control" formControlName="referenceTitrePerception"
+        placeholder="inserer le numero du document" aria-label="Amount (to the nearest dollar)">
+      <button type="button" (click)="rechercheNumDeclara()" class="btn btn-sm"
+        style="background-color: rgb(69, 171, 225); color: #fff;" name="ajouter">
         <i class="fas fa-search"></i>
         Recherche / Ajouter
       </button>
     </div>
- 
-  
-  <table class="table table-bordered mt-4">
+    <br>
+    <div class="row" *ngIf="datas">
+      <div class="col-md-3 offset-4">
+        <span class="text-end" style="margin-left: 110px;">filtrer le type</span>
+      </div>
+      <div class="col-md-5">
+        <select class="form-select" name="" id="">
+          <option value="">selectionner le type</option>
+          <option *ngFor="let item of comboboxData" [value]="item.id">Type Administratif</option>
+          <option value="2">Type Juridictionnel</option>
+          <!-- <option *ngFor="let item of comboboxData" [value]="item.id">{{ item.label }} -->
+        </select>
+      </div>
+    </div>
+
+    <hr>
+    <table class="table table-bordered mt-4">
+      <thead>
+        <tr>
+          <th>Référence Titre de Perception</th>
+          <th>Motivation Recours</th>
+          <th>Date de Décision</th>
+          <th>Montant Contesté</th>
+          <th>Devise</th>
+          <th>Avec Sursis</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let resultat of resultatsRecherches; let i = index">
+          <td>{{ resultat.referenceTitrePerception }}</td>
+          <td> {{ resultat.motifivationRecours }}</td>
+          <td>{{ resultat.montantNonConteste }}</td>
+          <td><input type="text" formControlName="montantConteste" [ngModel]="resultat.montantConteste"></td>
+          <td>{{ resultat.devise }}</td>
+          <td> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [checked]="avecSurcis"
+              (change)="onCheckboxChange(checkbox.checked)" #checkbox>
+          </td>
+          <td>
+            <!-- <i class="mdi mdi-delete text-danger" style="font-size: 20px" (click)="removeDetailEdit(resultat.referenceTitrePerception)"></i> -->
+            <button class="btn btn-danger" type="submit"
+              (click)="removeDetailEdit(resultat.referenceTitrePerception)">supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <input type="text" class="form-control" formControlName="referenceCourrier"><br>
+    <textarea name="" class="form-control" formControlName="observation" id="" cols="30" rows="4"></textarea><br>
+
+    <button type="submit" class="btn" style="background-color: rgb(69, 171, 225); color: #fff; border-radius: 5px;"
+      name="ajouter">
+      Enregistrer
+    </button>
+  </form>
+  <hr>
+  <!-- <button (click)="openModal()" class="btn btn-info">Ouvrir le modal</button> -->
+
+
+  <div #myModal class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#myModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Titre du modal</h5>
+          <button type="button" (click)="hideModal()" class="btn-close" data-dismiss="modal" aria-label="Close">
+            <!-- <span aria-hidden="true">&times;</span> -->
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ raisonSocial }} <br>
+            {{ observation}}
+
+          </div>
+          <ul class="nav nav-tabs">
+
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 1" (click)="changeTab(1)">Type Administratif</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 2" (click)="changeTab(2)">Type Juridictionnel 2</a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane" [class.show.active]="activeTab === 1">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Nom </th>
+                    <th score="col">type</th>
+                    <th scope="col">nif</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of data; let i = index">
+
+                  <tr *ngIf="item.typeReclamation==1">
+                    <!-- <th scope="row">{{ i+1}}</th> -->
+                    <td>{{item.raisonSocial}}</td>
+                    <td>{{item.typeReclamation}}</td>
+                    <td>{{item.nif}}</td>
+                    <td>{{item.dateCreate}}</td>
+                    <td>
+                      <!-- <a (click)="openModalData(item.id)">voir</a> -->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="tab-pane" [class.show.active]="activeTab === 2">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <!-- <th scope="col">Nom </th> -->
+                    <th score="col">type</th>
+                    <th scope="col">nif</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of data; let i = index">
+
+                  <tr *ngIf="item.typeReclamation==2">
+                    <!-- <th scope="row">{{ i+1}}</th> -->
+                    <td>{{item.raisonSocial}}</td>
+                    <td>{{item.typeReclamation}}</td>
+                    <td>{{item.nif}}</td>
+                    <td>{{item.dateCreate}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="hideModal()" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div #myModalDecision class="modal fade" tabindex="-1" role="dialog" data-toggle="modal"
+    data-target="#myModalDecision">
+    <div class="modal-dialog" [ngClass]="{'modal-lg': modalSize === 'large', 'modal-sm': modalSize === 'small'}"
+      role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Titre du modal</h5>
+          <button type="button" (click)="hideModalDecison()" class="btn-close" data-dismiss="modal" aria-label="Close">
+            <!-- <span aria-hidden="true">&times;</span> -->
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="rechercheForm" (ngSubmit)="traitement()">
+            <div class="modal-body">
+              <div class="border border-dark rounded p-2" style="margin: 4px 4px; font-size: 12px">
+                <div class="mb-3 fw-bold">Décision</div>
+                <select name="" formControlName="selectedValue" class="form-select">
+                  <option value="null">Veuillez selectionnnez la décision</option>
+                  <option value="partiel">Degrevement partiel</option>
+                  <option value="total">Degrevement total</option>
+                  <option value="rejet">Rejet reclamation</option>
+                </select>
+                <br />
+
+                <div *ngIf="rechercheForm.get('selectedValue')?.value === 'partiel'">
+                  <span>Montant dû :&nbsp;
+                    <span class="fw-bold">{{ montantDu }}</span> </span><br />
+                  <span>Partie montant contesté :&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="fw-bold">{{ adresseAssujetti }}</span><br />
+                  </span>
+                  <span>10% du montant non contesté (déjà payé)
+                    :&nbsp;&nbsp;&nbsp;&nbsp; <span class="fw-bold">{{ 100 }}$</span><br />
+                  </span>
+
+                  <input type="number" class="form-control" formControlName="montant"
+                    placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
+                  <span style="color: red">Reste à payer : {{ valeur_Valide}} $</span>
+                </div>
+                <div *ngIf="rechercheForm.get('selectedValue')?.value === 'total'">
+                  <input type="number" class="form-control" formControlName="montant"
+                    placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
+                </div>
+                <div *ngIf="rechercheForm.get('selectedValue')?.value === 'rejet'">
+                  <input type="number" class="form-control" formControlName="montant"
+                    placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
+                </div>
+                <!-- <div *ngIf="valeurSelectionner=='partiel'">
+                  <span>Montant dû :&nbsp;
+                    <span class="fw-bold">{{ montantDu }}</span> </span><br />
+                  <span>Partie montant contesté :&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="fw-bold">{{ adresseAssujetti }}</span><br />
+                  </span>
+                  <span>10% du montant non contesté (déjà payé)
+                    :&nbsp;&nbsp;&nbsp;&nbsp; <span class="fw-bold">{{ 100 }}$</span><br />
+                  </span>
+
+                  <input type="number" class="form-control" formControlName="montant"
+                    placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
+                  <span style="color: red">Reste à payer : {{ valeur_Valide}} $</span>
+                </div> -->
+
+                <!-- <div *ngIf="valeurSelectionner=='total'">
+                  <input type="number" class="form-control" placeholder="veuillez entrer le montant degrever"
+                    style="margin-top: 80px; margin-bottom: 20px" />
+                </div>
+                <div *ngIf="valeurSelectionner=='rejet'">
+                  <input type="number" class="form-control" placeholder="veuillez entrer le montant degrever"
+                    style="margin-top: 80px; margin-bottom: 20px" />
+                </div> -->
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="d-flex">
+                <div class="upload-btn-wrapper">
+                  <!-- <input class="form-control" formControlName="archive" type="file" (change)="onFileSelected($event)" multiple> -->
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm" type="button" (click)="hideModalDecison()">
+                Fermer
+              </button>
+
+              <button type="submit" class="btn btn-primary btn-sm" name="ajouter">
+                Traitement
+              </button>
+              <!-- <button type="button" class="btn btn-warning btn-sm" (click)="modal.close('Close click')">
+            <i class="mdi mdi-view-grid-plus"></i>Afficher les
+            observations
+          </button> -->
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div #validation class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#validation">
+    <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
+      role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title justify-content-center">Titre du modal</h5>
+          <button type="button" (click)="hide()" class="btn-close" data-dismiss="modal" aria-label="Close">
+            <!-- <span aria-hidden="true">&times;</span> -->
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="rechercheForm" (ngSubmit)="sauver()">
+
+            <div class="row justify-content-center">
+              <div class="col-sm-4">
+                <!-- 
+                <input type="radio">
+                <input type="radio"> -->
+                <div class="form-check" style="float: right">
+
+                  <div class="form-check">
+                    <input type="radio" value="2" formControlName="radioValue" />
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      Approuver
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-check">
+                  <!-- <input type="radio" value="1" formControlName="radioValue" /> -->
+                  <input type="radio">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Réjeter
+                  </label>
+                </div>
+              </div>
+              <hr />
+              <br>
+              <textarea formControlName="observation" placeholder="Veuillez ecrire vos observations" name=""
+                class="form-control" id="" style="margin: 5px;" cols="30" rows="4"></textarea>
+              <button (click)="hide()" class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
+              <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div #myModalv class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#myModalv">
+    <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
+      role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title justify-content-center">Titre du modal</h5>
+          <button type="button" (click)="hide()" class="btn-close" data-dismiss="modal" aria-label="Close">
+            <!-- <span aria-hidden="true">&times;</span> -->
+          </button>
+        </div>
+        <div class="modal-body">
+        
+
+            <div class="row justify-content-center">
+              <p>{{ raisonSocial}}</p>
+              <hr />
+              <br>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nom </th>
+                    <th scope="col">nif</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+            
+                  <tr *ngFor="let item of detailsReclamation; let i = index;">
+                    <th scope="row">{{ i+1}}</th>
+                    <td>{{item.montantDu}}</td>
+                    <td>{{item.montantConteste}}</td>
+                    <td>{{item.montantNonConteste}}</td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+              <button (click)="hide()" class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
+              <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
+            </div>
+        
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <table class="table table-striped">
     <thead>
       <tr>
-        <th>Référence Titre de Perception</th>
-        <th>Motivation Recours</th>
-        <th>Date de Décision</th>
-        <th>Montant Contesté</th>
-        <th>Devise</th>
-        <th>Avec Sursis</th>
-        <th>Action</th>
+        <th scope="col">#</th>
+        <th scope="col">Nom </th>
+        <th scope="col">nif</th>
+        <th scope="col">Date</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let resultat of resultatsRecherches; let i = index">
-        <td>{{ resultat.referenceTitrePerception }}</td>
-        <td> {{ resultat.motifivationRecours }}</td>
-        <td>{{ resultat.montantNonConteste }}</td>
-        <td><input type="text" formControlName="montantConteste" [ngModel]="resultat.montantConteste"></td>
-        <td>{{ resultat.devise }}</td>
-        <td>      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [checked]="avecSurcis" (change)="onCheckboxChange(checkbox.checked)" #checkbox>
-        </td>
+
+      <tr *ngFor="let item of data; let i = index">
+        <th scope="row">{{ i+1}}</th>
+        <td>{{item.raisonSocial}}</td>
+        <td>{{item.nif}}</td>
+        <td>{{item.dateCreate}}</td>
         <td>
-          <i class="mdi mdi-delete text-danger" style="font-size: 20px" (click)="removeDetailEdit(resultat.referenceTitrePerception)"></i>
-          <button class="btn btn-danger" type="submit" (click)="removeDetailEdit(resultat.referenceTitrePerception)">supprimer</button>
+          <!-- <a (click)="openModalData(item.id)">voir</a> -->
+          <button class="btn btn-info" (click)="selectElement(item.nif)">Afficher</button>
+        
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <hr>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nom </th>
+        <th scope="col">nif</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let item of data; let i = index;">
+        <th scope="row">{{ i+1}}</th>
+        <td>{{item.raisonSocial}}</td>
+        <td>{{item.nif}}</td>
+        <td>{{item.dateCreate}}</td>
+        <td>
+          <!-- <a (click)="openModalData(item.id)">voir</a> -->
+          <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button>
+          <button class="btn btn-success" (click)="selectElementValidation(item.id)">Valider</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <hr>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nom </th>
+        <th scope="col">nif</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr *ngFor="let item of list_reclamations; let i = index;">
+        <th scope="row">{{ i+1}}</th>
+        <td>{{item.raisonSocial}}</td>
+        <td>{{item.nif}}</td>
+        <td>{{item.dateCreate}}</td>
+        <td>
+          <!-- <a (click)="openModalData(item.id)">voir</a> -->
+          <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button>
+          <button class="btn btn-secondary" (click)="afficherDetail(item.id)">Detail</button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <input type="text" class="form-control"  formControlName="referenceCourrier"><br>
-  <textarea name="" class="form-control" formControlName="observation" id="" cols="30" rows="4"></textarea><br>
-
-  <button type="submit" class="btn"
-  style="background-color: rgb(69, 171, 225); color: #fff; border-radius: 5px;" name="ajouter">
-  Enregistrer
-</button>
-  </form>
-  <!-- <form [formGroup]="rechercheForm" (ngSubmit)="onSubmit()">
-    <input type="text" formControlName="referenceTitrePerception" class="form-control" placeholder="Référence du Titre de Perception">
-    <button type="submit">Rechercher</button>
-  </form>
-  <table class="table table-hover mt-4">
-    <thead>
-      <tr>
-        <th>Référence Titre de Perception</th>
-        <th>Motivation Recours</th>
-        <th>Date de Décision</th>
-        <th>Montant Contesté</th>
-        <th>Devise</th>
-        <th>Avec Sursis</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let resultat of resultatsRecherches">
-        <td>{{ resultat.referenceTitrePerception }}</td>
-        <td>{{ resultat.motifivationRecours }}</td>
-        <td>{{ resultat.dateDecision }}</td>
-        <td>{{ resultat.montantConteste }}</td>
-        <td>{{ resultat.devise }}</td>
-        <td>{{ resultat.avecSurcis }}</td>
-      </tr>
-    </tbody>
-  </table> -->
 </div>
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
