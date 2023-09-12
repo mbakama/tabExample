@@ -35,12 +35,7 @@
               class="btn btn-success btn-sm">
               <i class="fas fa-search"></i>
             </button>
-            <div class="lds-ring" *ngIf="isLoading">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
+            
 
           </div>
         </div>
@@ -213,7 +208,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="hideModal()" data-dismiss="modal">Fermer</button>
-          <button type="button" class="btn btn-primary">Enregistrer</button>
+          <button type="button" class="btn btn-primary" (click)="hideModal()">Enregistrer</button>
         </div>
       </div>
     </div>
@@ -314,13 +309,14 @@
       </div>
     </div>
   </div>
-  <div #validation class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#validation">
+  <div #monModal class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#monModal">
     <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
       role="document">
       <div class="modal-content">
+        <!-- {{ montantDu}} -->
         <div class="modal-header">
           <h5 class="modal-title justify-content-center">Titre du modal</h5>
-          <button type="button" (click)="hide()" class="btn-close" data-dismiss="modal" aria-label="Close">
+          <button type="button" (click)="hideModalValidation()"  class="btn-close" data-dismiss="modal" aria-label="Close">
             <!-- <span aria-hidden="true">&times;</span> -->
           </button>
         </div>
@@ -328,14 +324,13 @@
           <form [formGroup]="rechercheForm" (ngSubmit)="sauver()">
 
             <div class="row justify-content-center">
-              <div class="col-sm-4">
-                <!-- 
-                <input type="radio">
-                <input type="radio"> -->
+              <!-- <div class="col-sm-4">
+              
                 <div class="form-check" style="float: right">
 
                   <div class="form-check">
-                    <input type="radio" value="2" formControlName="radioValue" />
+                    <input type="radio" name="radioOptions" formControlName="radio" value="option1" (change)="recuperer_valeur_radio($event)">
+                    
                     <label class="form-check-label" for="flexRadioDefault1">
                       Approuver
                     </label>
@@ -344,19 +339,27 @@
               </div>
               <div class="col-sm-4">
                 <div class="form-check">
-                  <!-- <input type="radio" value="1" formControlName="radioValue" /> -->
-                  <input type="radio">
+                  
+                  <input type="radio" name="radioOptions" formControlName="radio" value="option2" (change)="recuperer_valeur_radio($event)">
+
                   <label class="form-check-label" for="flexRadioDefault1">
                     Réjeter
                   </label>
                 </div>
-              </div>
+                
+              </div> -->
+
+         
+               
+                  <input type="radio" name="valeurRadio" [value]="1" formControlName="valeurRadio">
+                
+          
               <hr />
               <br>
               <textarea formControlName="observation" placeholder="Veuillez ecrire vos observations" name=""
                 class="form-control" id="" style="margin: 5px;" cols="30" rows="4"></textarea>
-              <button (click)="hide()" class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
-              <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
+              <button  class="btn btn-danger btn-sm" (click)="hideModalValidation()" style="width: 100px;">fermer</button> &nbsp;
+              <!-- <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button> -->
             </div>
           </form>
         </div>
@@ -365,12 +368,14 @@
 
   </div>
   <div #myModalv class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#myModalv">
+   
+  <form [formGroup]="rechercheForm" (ngSubmit)="save()">
     <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
       role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title justify-content-center">Titre du modal</h5>
-          <button type="button" (click)="hide()" class="btn-close" data-dismiss="modal" aria-label="Close">
+          <button type="button"  class="btn-close" data-dismiss="modal" aria-label="Close">
             <!-- <span aria-hidden="true">&times;</span> -->
           </button>
         </div>
@@ -395,20 +400,28 @@
                   <tr *ngFor="let item of detailsReclamation; let i = index;">
                     <th scope="row">{{ i+1}}</th>
                     <td>{{item.montantDu}}</td>
-                    <td>{{item.montantConteste}}</td>
+                    <td>{{item.montantConteste}}</td> 
                     <td>{{item.montantNonConteste}}</td>
+                    <td>
+                      {{ item.motifivationRecours}}
+                    </td>
+                    <td>
+                      <input type="checkbox" formControlName="etatValidation" ngModel="item.etat" (change)="onCheckboxChanged()" />
+                      
+                    </td>
+                    
                     
                   </tr>
                 </tbody>
               </table>
-              <button (click)="hide()" class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
+              <button class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
               <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
             </div>
         
         </div>
       </div>
     </div>
-
+  </form>
   </div>
   <table class="table table-striped">
     <thead>
@@ -436,6 +449,7 @@
   </table>
   <br>
   <hr>
+  <H1>Tableau 2</H1>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -451,11 +465,12 @@
         <th scope="row">{{ i+1}}</th>
         <td>{{item.raisonSocial}}</td>
         <td>{{item.nif}}</td>
-        <td>{{item.dateCreate}}</td>
+        <td>{{item.dateCreate}} {{ item.id}}</td>
         <td>
           <!-- <a (click)="openModalData(item.id)">voir</a> -->
-          <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button>
-          <button class="btn btn-success" (click)="selectElementValidation(item.id)">Valider</button>
+          <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button> &nbsp;
+          <button class="btn btn-success" (click)="afficher_detail(item.nif)">Detaiil</button>
+          
         </td>
       </tr>
     </tbody>

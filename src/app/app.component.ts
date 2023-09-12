@@ -74,15 +74,36 @@ export class AppComponent implements OnInit {
   idReclamationSelectionnee: number | null = null;
   all_data_from_api: any;
   detailsReclamation: any;
+  local_informations_liste: any;
+  selectedOption: any;
+  // value: string | null = null;
+  valuev: number[] = [];
+  creation_tableau: any;
+  nouveau_formulaire: FormGroup[] = [];
+  ligneSelectionneeId: any;
+  lignesAvecValeursRadios: any;
+  referenceCourrier: any;
+  checked: boolean | null | undefined;
+  number: number = 0;
+  adresse: any;
+  decisions: number[] = [];
+  detailReclamation: any;
+  detailsReclamation1: any[] =[]; // Votre tableau detailsReclamation
+  formArray: FormGroup[] = []; // Tableau de formGroup pour chaque ligne
+  value_2: number[] = []; //
+  nouveau_tableau: any;
   // rechercheForm: FormGroup;
   // rechercheForm: FormBuilder;
   ngOnInit(): void {
-    this.getAllBooks()
     this.getAlldata();
     this.get_all_data();
     // this.AfficherContribuable()
 
-
+    this.formArray = this.detailsReclamation1.map((item) => {
+      return this.builder.group({
+        etatValidation: [item.etatValidation], // Ajoutez d'autres contrôles si nécessaire
+      });
+    });
     // this.rechercheForm.get('selectedValue')?.valueChanges.subscribe((s) => {
     //   this.selectionValue(s);
     // })
@@ -95,7 +116,7 @@ export class AppComponent implements OnInit {
 
         this.selectionValue(this.valeur)
       });
-
+      
       
   }
   constructor(private apiService: ServiceService, private serve : NgxSpinnerService, private builder: FormBuilder
@@ -117,6 +138,7 @@ export class AppComponent implements OnInit {
     selectedValue: ['partiel'],
     montant: this.builder.control(null, Validators.required),
     radioValue: [],
+    etatValidation : [false]
   });
   get details() {
     return this.reclamationForm.get('detailsReclamation') as FormArray
@@ -179,8 +201,39 @@ export class AppComponent implements OnInit {
   @ViewChild('myModalv') myModalv!: ElementRef;
   @ViewChild('myModalDecision') myModalDecision!: ElementRef;
   @ViewChild('validation') validation!:ElementRef;
+  @ViewChild('monModal') monModal!: ElementRef;
   //open modal
 
+  monModal1(size:string)
+  {
+    
+    const modalElement = this.monModal.nativeElement;
+    // $(this.monModal.nativeElement).modal({ backdrop: 'static', keyboard: false });
+    $(this.monModal.nativeElement).appendTo('body');
+    // $(this.monModal.nativeElement).modal('handleUpdate'); 
+    $(modalElement).modal('show');
+    this.modalSize = size;
+
+    const ligneSelectionnee = this.detailsReclamation.find((item: { id: any; }) => item.id === this.ligneSelectionneeId);
+
+    if (ligneSelectionnee) {
+      const valeurRadioControl = this.rechercheForm.get('valeurRadio');
+      if (valeurRadioControl) {
+        ligneSelectionnee.radioValue = valeurRadioControl.value;
+        this.lignesAvecValeursRadios.push(ligneSelectionnee);
+      }
+    
+
+    this.lignesAvecValeursRadios.push(ligneSelectionnee);
+  }
+  }
+
+  hideModalValidation()
+  {
+    const modalElement = this.monModal.nativeElement;
+    $(modalElement).modal('hide');
+    this.rechercheForm.reset();
+  }
   openModalD() {
     const modalElement = this.myModalv.nativeElement;
     $(modalElement).modal('show');
@@ -415,6 +468,7 @@ export class AppComponent implements OnInit {
     this.apiService.getAlldata().subscribe((resultat: any) => {
       this.raisonSocial = resultat.data.raisonSocial;
       this.data = resultat.data;
+      this.local_informations_liste = resultat.data
       // this.list_reclamations = resultat.data
       console.log(this.data)
     });
@@ -430,8 +484,89 @@ export class AppComponent implements OnInit {
     })
   }
 
+  afficher_ligne_detail(id:any)
+  {
+    const ligne_pour_detail = this.detailsReclamation.find((detail:any)=>detail.id === id);
 
+    if(ligne_pour_detail)
+    {
+      this.montantDu = ligne_pour_detail.montantDu
+      
+      const detailsReclamation = {
+        id: ligne_pour_detail.id,
+        motifivationRecours: ligne_pour_detail.motifivationRecours,
+        referenceTitrePerception: ligne_pour_detail.referenceTitrePerception,
+        montantNonConteste: ligne_pour_detail.montantNonConteste,
+        montantConteste: ligne_pour_detail.montantConteste,
+        motivationReclamation:
+          ligne_pour_detail.motivationReclamation,
+          etatValidation:ligne_pour_detail.etatValidation,
+        devise: ligne_pour_detail.devise,
+        montantDu: ligne_pour_detail.montantDu,
+        typeDocument: ligne_pour_detail.typeDocument,
+        intituleActeGenerateur:
+          ligne_pour_detail.intituleActeGenerateur,
+        avecSurcis: ligne_pour_detail.avecSurcis,
+        fk_AgentCreat: ligne_pour_detail.fk_AgentCreat,
+        fkActeGenerateur: ligne_pour_detail.fkActeGenerateur,
+      };
+      // console.log(detailsReclamation)
 
+      const index = this.resultatsRecherches.findIndex(
+        (item) =>
+          item.id ===
+          detailsReclamation.id
+      );
+
+      if (index !== -1) {
+        this.resultatsRecherches[index] = detailsReclamation;
+      this.detailReclamation.push(detailsReclamation)
+
+      // console.log(this.detailReclamation)
+     
+      // this.nouveau_formulaire = this.detailsReclamation.map(
+      //   (item:any) => {
+      //     return this.builder.group({
+            
+      //       etatValidation: [item.etatValidation],
+            
+      //     });
+      //   }
+      // );
+    }
+    this.monModal1('large');
+  }
+  }
+
+  afficher_detail(id:any){
+    const detail_by_id_ = this.local_informations_liste.find((reclamation:any) => reclamation.nif === id);
+
+    if (detail_by_id_){
+      this.idReclamationSelectionnee = detail_by_id_.id;
+      this.raisonSocial = detail_by_id_.raisonSocial;
+      this.nif = detail_by_id_.nif;
+      this.adresse = detail_by_id_.adresse;
+      this.detailsReclamation = detail_by_id_.detailsReclamation;
+
+      console.log(this.detailsReclamation)
+
+      
+      
+      
+      
+     
+      this.nouveau_formulaire = this.detailsReclamation.map((item: any) => {
+        // const etatValidationValue = item.etatValidation !== null ? item.etatValidation : false;
+        return this.builder.group({
+          etat: [item.etat],
+        });
+      });
+      
+      // console.log(detail_by_id_)
+      this.openModalD();
+      this.hide()
+    }
+  }
   afficherDetail(id:any)
   {
     const detail_by_id = this.list_reclamations.find((reclamation:any) => reclamation.id === id);
@@ -442,8 +577,9 @@ export class AppComponent implements OnInit {
       this.detailsReclamation = detail_by_id.detailsReclamation;
       console.log(this.idReclamationSelectionnee);
       console.log(this.raisonSocial)
-      this.openModalD();
-      this.hide()
+
+
+      
     }
     
   }
@@ -454,14 +590,107 @@ export class AppComponent implements OnInit {
     console.log(value);
   }
 
-  getAllBooks()
+  recuperer_valeur_radio(event :any)
   {
-    this.apiService.getBooks().subscribe((res:any)=>
-    {
-       this.book = res;
 
-       console.log(res);
-    });
+    const valeur = event.target.value ==="option1" ? 1 : 0
+     this.selectedOption = event.target.value ==="option1" ? 1 : 0 
+    
+      console.log(valeur);
+   
   }
 
+  accessRowValues() {
+    const validation: number[] = []; // Array to store montantConteste values
+    
+
+    // const recu = this.rechercheForm.get('etatValidation')
+
+    // const formGroup = this.nouveau_formulaire[i];
+
+    // Faites quelque chose avec la valeur de la case à cocher de la ligne spécifique
+    // console.log(`Ligne ${i + 1} - Checkbox : ${isChecked}`);
+
+    for (const formGroup of this.nouveau_formulaire) {
+    const etatValidation = formGroup.get('etatValidation');
+
+      const formControl = formGroup.get("etatValidation");
+       const isChecked = etatValidation?.value ? 1 : 0;
+
+      // const value = formControl?.value ? 1 : 0;
+
+      
+
+      validation.push(isChecked); // Store the montantConteste value in the array
+
+    }
+
+     this.value_2 = validation; // Assign the array of montantConteste values to this.value
+     console.log(this.value_2)
+  }
+
+  
+  save(){
+
+    const details: any[] = [];
+this.accessRowValues()
+    for (let i = 0; i < this.detailsReclamation.length; i++) {
+      const element = this.detailsReclamation[i];
+     const v = this.value_2[i]
+      
+      
+      const item = {
+        montantConteste: element.montantConteste,
+        motifivationRecours: element.motifivationRecours,
+        referenceTitrePerception: element.referenceTitrePerception,
+        montantNonConteste: element.montantNonConteste,
+        // montantConteste : element.montantConteste,
+        intituleActeGenerateur: element.intituleActeGenerateur,
+        typeDocument: element.typeDocument,
+        etatValidation :v,
+        motivationReclamation: element.motivationReclamation,
+        montantDu: element.montantDu,
+        devise: element.devise,
+        avecSurcis: 1,
+        id: element.id
+        // Ajoutez d'autres propriétés à extraire de chaque élément selon vos besoins
+      };
+      details.push(item);
+    }
+
+
+    let stDs = details;
+    const request = {
+      observation: this.observation,
+      
+      raisonSociale: this.raisonSocial,
+      adresse: this.adresse,
+      nif: this.nif,
+      // archive: "",
+      detailsReclamation: stDs,
+    };
+
+    console.log(request);
+  }
+  onCheckboxChanged() {
+    // for ( const valeur2 of this.rechercheForm ){
+
+    // }
+    this.checked = this.rechercheForm.get('etatValidation')?.value;
+
+     this.number = this.checked ? 1 : 0;
+
+     console.log(this.number);
+  }
+  // onCheckboxChanged(index: number) {
+  //   const formGroup = this.formArray[index];
+  //   const etatValidation = formGroup.get('etatValidation');
+  //   const isChecked = etatValidation?.value;
+
+    
+  //   const number = isChecked ? 1 : 0;
+  //   console.log(`Ligne ${index + 1} - Checkbox : ${number}`);
+  // }
+  
+  
 }

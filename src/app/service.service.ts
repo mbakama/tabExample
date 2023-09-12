@@ -22,7 +22,7 @@ export class ServiceService {
     return this.http.get('http://127.0.0.1:8000/api/hom/'+id);
   }
   getAlldata(){
-    return this.http.get('http://127.0.0.1:8000/api/recls');
+    return this.http.get('http://127.0.0.1:8000/api/home');
   }
   getAllReclamationDetails(id:any):Observable<any>
   {
