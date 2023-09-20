@@ -89,8 +89,8 @@
       <thead>
         <tr>
           <th>Référence Titre de Perception</th>
-          <th>Motivation Recours</th>
-          <th>Date de Décision</th>
+          <th>Montant du</th>
+          <th>Montant Non Conteste</th>
           <th>Montant Contesté</th>
           <th>Devise</th>
           <th>Avec Sursis</th>
@@ -100,9 +100,11 @@
       <tbody>
         <tr *ngFor="let resultat of resultatsRecherches; let i = index">
           <td>{{ resultat.referenceTitrePerception }}</td>
-          <td> {{ resultat.motifivationRecours }}</td>
-          <td>{{ resultat.montantNonConteste }}</td>
-          <td><input type="text" formControlName="montantConteste" [ngModel]="resultat.montantConteste"></td>
+          <td> {{ resultat.montantDu }}</td>
+          <td>{{resultat.montant_conteste_montant_du}}</td>
+          <td><input #montantContesteInput type="number"  formControlName="montantConteste" (input)="updateValue($event)" max="resultat.montantConteste" ></td>
+          
+          <!-- <td><input type="text" (change)="afficherValeur($event.target?.value)" formControlName="montantConteste" [ngModel]="resultat.montantConteste"></td> -->
           <td>{{ resultat.devise }}</td>
           <td> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [checked]="avecSurcis"
               (change)="onCheckboxChange(checkbox.checked)" #checkbox>
@@ -241,15 +243,15 @@
                   <span>Montant dû :&nbsp;
                     <span class="fw-bold">{{ montantDu }}</span> </span><br />
                   <span>Partie montant contesté :&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="fw-bold">{{ adresseAssujetti }}</span><br />
+                    <span class="fw-bold">{{ montantConteste }}</span><br />
                   </span>
                   <span>10% du montant non contesté (déjà payé)
                     :&nbsp;&nbsp;&nbsp;&nbsp; <span class="fw-bold">{{ 100 }}$</span><br />
                   </span>
 
-                  <input type="number" class="form-control" formControlName="montant"
+                  <input type="number" class="form-control"  formControlName="montant"
                     placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
-                  <span style="color: red">Reste à payer : {{ valeur_Valide}} $</span>
+                  <span style="color: red">Reste à payer : {{ reste_a_payer}} </span>
                 </div>
                 <div *ngIf="rechercheForm.get('selectedValue')?.value === 'total'">
                   <input type="number" class="form-control" formControlName="montant"
@@ -259,30 +261,6 @@
                   <input type="number" class="form-control" formControlName="montant"
                     placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
                 </div>
-                <!-- <div *ngIf="valeurSelectionner=='partiel'">
-                  <span>Montant dû :&nbsp;
-                    <span class="fw-bold">{{ montantDu }}</span> </span><br />
-                  <span>Partie montant contesté :&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="fw-bold">{{ adresseAssujetti }}</span><br />
-                  </span>
-                  <span>10% du montant non contesté (déjà payé)
-                    :&nbsp;&nbsp;&nbsp;&nbsp; <span class="fw-bold">{{ 100 }}$</span><br />
-                  </span>
-
-                  <input type="number" class="form-control" formControlName="montant"
-                    placeholder="Veuillez entrer le montant degrever" style="margin-top: 80px; margin-bottom: 20px" />
-                  <span style="color: red">Reste à payer : {{ valeur_Valide}} $</span>
-                </div> -->
-
-                <!-- <div *ngIf="valeurSelectionner=='total'">
-                  <input type="number" class="form-control" placeholder="veuillez entrer le montant degrever"
-                    style="margin-top: 80px; margin-bottom: 20px" />
-                </div>
-                <div *ngIf="valeurSelectionner=='rejet'">
-                  <input type="number" class="form-control" placeholder="veuillez entrer le montant degrever"
-                    style="margin-top: 80px; margin-bottom: 20px" />
-                </div> -->
-
               </div>
             </div>
             <div class="modal-footer">
@@ -296,7 +274,7 @@
               </button>
 
               <button type="submit" class="btn btn-primary btn-sm" name="ajouter">
-                Traitement
+                Traiter
               </button>
               <!-- <button type="button" class="btn btn-warning btn-sm" (click)="modal.close('Close click')">
             <i class="mdi mdi-view-grid-plus"></i>Afficher les
@@ -321,7 +299,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form [formGroup]="rechercheForm" (ngSubmit)="sauver()">
+          <form [formGroup]="rechercheForm">
 
             <div class="row justify-content-center">
               <!-- <div class="col-sm-4">
@@ -369,7 +347,7 @@
   </div>
   <div #myModalv class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#myModalv">
    
-  <form [formGroup]="rechercheForm" (ngSubmit)="save()">
+  
     <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
       role="document">
       <div class="modal-content">
@@ -381,9 +359,14 @@
         </div>
         <div class="modal-body">
         
-
+          <form [formGroup]="rechercheForm" (ngSubmit)="save()">
             <div class="row justify-content-center">
               <p>{{ raisonSocial}}</p>
+
+              <!-- <input type="text" formControlName="observation" class="form"> -->
+              <textarea formControlName="observation" class="form-control" id="" cols="3" rows="10" placeholder="Veuillez ecrire une observation">
+
+              </textarea>
               <hr />
               <br>
               <table class="table table-striped">
@@ -397,32 +380,98 @@
                 </thead>
                 <tbody>
             
-                  <tr *ngFor="let item of detailsReclamation; let i = index;">
+                  <tr *ngFor="let item of detailsReclamation; let i = index" [formGroup]="nouveau_formulaire[i]">
                     <th scope="row">{{ i+1}}</th>
                     <td>{{item.montantDu}}</td>
                     <td>{{item.montantConteste}}</td> 
                     <td>{{item.montantNonConteste}}</td>
                     <td>
-                      {{ item.motifivationRecours}}
+                      {{ item.motifivationRecours}} {{ item.etat}}
                     </td>
                     <td>
-                      <input type="checkbox" formControlName="etatValidation" ngModel="item.etat" (change)="onCheckboxChanged()" />
-                      
+                      <input type="checkbox" formControlName="etat" (change)="onCheckboxChanged(i)" />
                     </td>
-                    
-                    
                   </tr>
+                    
+                    
+               
                 </tbody>
               </table>
               <button class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
               <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
             </div>
-        
+          </form>
         </div>
       </div>
     </div>
-  </form>
+  
   </div>
+
+
+
+
+
+  <div #detail class="modal fade" tabindex="-1" role="dialog" data-toggle="modal" data-target="#detail">
+   
+  
+    <div class="modal-dialog" [ngClass]="{'modal-lg':modalSize==='large','modal-sm':modalSize==='small'}"
+      role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title justify-content-center">Titre du modal</h5>
+          <button type="button"  class="btn-close" data-dismiss="modal" aria-label="Close">
+            <!-- <span aria-hidden="true">&times;</span> -->
+          </button>
+        </div>
+        <div class="modal-body">
+        
+          <form [formGroup]="rechercheForm">
+            <div class="row justify-content-center">
+              <p>{{ nif_}}</p>
+
+              
+              <hr />
+              <br>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">montantDu</th>
+                    <th scope="col">montant conteste</th>
+                    <th scope="col">montant Non Conteste/th>
+                      <th>action</th>
+                  </tr>
+                </thead>
+                <tbody>
+            
+                  <tr *ngFor="let item of detials_reclamation; let i = index">
+                    <th scope="row">{{ i+1}}</th>
+                    <td>{{item.montantDu}}</td>
+                    <td>{{item.montantConteste}}</td> 
+                    <td>{{item.montantNonConteste}}</td>
+                    <td>
+                      <button class="btn btn-info btn-sm" (click)="selectElementDecision(item.id)">afficher modal</button>
+                    </td>
+                    <!-- <td>
+                      <input type="checkbox" formControlName="etat" (change)="onCheckboxChanged(i)" />
+                    </td> -->
+                  </tr>
+                    
+                    
+               
+                </tbody>
+              </table>
+              <button class="btn btn-danger btn-sm" style="width: 100px;">fermer</button> &nbsp;
+              <button class="btn btn-info btn-sm" style="width: 100px;">sauver</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -468,7 +517,8 @@
         <td>{{item.dateCreate}} {{ item.id}}</td>
         <td>
           <!-- <a (click)="openModalData(item.id)">voir</a> -->
-          <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button> &nbsp;
+          <!-- <button class="btn btn-info" (click)="selectElementDecision(item.id)">Afficher</button> &nbsp; -->
+          <button class="btn btn-info" (click)="afficher_data(item.nif)">Afficher</button>
           <button class="btn btn-success" (click)="afficher_detail(item.nif)">Detaiil</button>
           
         </td>

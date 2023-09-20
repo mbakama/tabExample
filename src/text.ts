@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ServiceService } from './service.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 
 @Component({
   selector: 'app-root',
@@ -98,62 +97,36 @@ export class AppComponent implements OnInit {
   valueState: string = '';
   montantContesteRecuperer: any;
   montant_conteste_montant_du: number=0;
-  all_reclamation_data: any;
-  v: any;
-  informations: any;
-  detials_reclamation: any;
-  private _nif_: any;
-  nif_: any;
-  reste_a_payer: any;
-  mon_nouveau_montant: number = 0;
-  data_: any;
-  montant_: any;
-  montant_du: any;
-  montant_non_constesté: any;
-  // montantContesteInput: any;
   // rechercheForm: FormGroup;
   // rechercheForm: FormBuilder;
   ngOnInit(): void {
     this.getAlldata();
     this.get_all_data();
-    this.get_all_detail();
-    // this. subscribeToMontantChanges()
     // this.AfficherContribuable()
 
     this.rechercheForm.get('selectedValue')?.setValue('partiel');
-    this.selectionValue(this.valeur)
 
-    // this.rechercheForm.get('montant')?.valueChanges.subscribe((data: any) => {
-    //   console.log(data)
-    //   this.valeur_de_monant = data
+    this.rechercheForm.get('montant')?.valueChanges.subscribe((data: any) => {
+      console.log(data)
+      this.valeur_de_monant = data
 
-    //   this.selectionValue(this.valeur)
-    // });
-
-
-
-
-
-    
-    // this.rechercheForm.get('montantConteste')?.valueChanges.subscribe((valeur:any)=>{
-    //   this.montantContesteRecuperer = valeur
-     
-    // })
+      this.selectionValue(this.valeur)
+    });
+    this.rechercheForm.get('montantConteste')?.valueChanges.subscribe((valeur:any)=>{
+      this.montantContesteRecuperer = valeur
+      this.methodeTest()
+    })
     
 
   }
   constructor(private apiService: ServiceService, private serve: NgxSpinnerService, private builder: FormBuilder
   ) { }
 
- //for modal
- @ViewChild('myModal') myModal!: ElementRef;
- @ViewChild('myModalv') myModalv!: ElementRef;
- @ViewChild('myModalDecision') myModalDecision!: ElementRef;
- @ViewChild('validation') validation!: ElementRef;
- @ViewChild('monModal') monModal!: ElementRef;
- @ViewChild('detail') detail!: ElementRef;
+methodeTest():void{
+  const v = this.montantContesteRecuperer
 
-
+ 
+}
   rechercheForm = this.builder.group({
     typeReclamation: [1],
     observation: ['', Validators.required],
@@ -161,14 +134,13 @@ export class AppComponent implements OnInit {
     no_document: this.builder.control('', Validators.required),
     adresse: this.builder.control(null, Validators.required),
     nif: this.builder.control(null, Validators.required),
-    // montantConteste: ['', Validators.required],
+    montantConteste: ['', Validators.required],
     archive: '',
     typedocument: this.builder.control(null, Validators.required),
     referenceTitrePerception: '',
     detailsReclamation: this.builder.array([]),
     selectedValue: ['partiel'],
     montant: this.builder.control(null, Validators.required),
-    montantConteste: ['', [Validators.required, this.validateMontantConteste]],
     radioValue: [],
     // etat: [0]
   });
@@ -186,12 +158,56 @@ export class AppComponent implements OnInit {
     console.log(this.activeTab)
   }
 
-  openDetail(size:string) {
-    const modalElement = this.detail.nativeElement;
-    $(modalElement).modal('show');
+  AfficherContribuable() {
+    let reference: string;
+    this.serve.show();
+    this.isLoading = true;
 
-    this.modalSize = size;
+    // this.loader = true;
+
+
+    if (typeof this._nif == 'string') {
+      reference = this._nif;
+      this.apiService.getHomeReclamation(reference).subscribe((resultat: any) => {
+        // this.serve.hide();
+        setTimeout(() => {
+          console.log(resultat.data);
+
+          this.nomAssujetti = resultat.data.raisonSocial;
+          this.typepersonne = resultat.data.typeReclamation;
+          this.nif = resultat.data.nif;
+          this.adresseAssujetti = resultat.data.adresse
+          this.datas = resultat.data
+          
+          this.dataArray = [this.datas]
+
+          if (Array.isArray(this.dataArray)) {
+            this.donnees = this.dataArray;
+            console.log(this.donnees)
+
+            this.comboboxData = this.donnees.map(item => ({ id: item.id, typeReclamation: item.typeReclamation }));
+          } else {
+            console.error('Les données retournées ne sont pas un tableau.');
+          }
+          // this.serve.hide();
+          this.isLoading = false;
+        }, 5000);
+
+
+      })
+
+      // this.rechercheNumDeclara()
+
+    }
   }
+  //for modal
+  @ViewChild('myModal') myModal!: ElementRef;
+  @ViewChild('myModalv') myModalv!: ElementRef;
+  @ViewChild('myModalDecision') myModalDecision!: ElementRef;
+  @ViewChild('validation') validation!: ElementRef;
+  @ViewChild('monModal') monModal!: ElementRef;
+  //open modal
+
   monModal1(size: string) {
 
     const modalElement = this.monModal.nativeElement;
@@ -252,129 +268,49 @@ export class AppComponent implements OnInit {
   }
 
 
-  AfficherContribuable() {
-    let reference: string;
-    this.serve.show();
-    this.isLoading = true;
-
-    // this.loader = true;
-
-
-    if (typeof this._nif == 'string') {
-      reference = this._nif;
-      this.apiService.getHomeReclamation(reference).subscribe((resultat: any) => {
-        // this.serve.hide();
-        setTimeout(() => {
-          console.log(resultat.data);
-
-          this.nomAssujetti = resultat.data.raisonSocial;
-          this.typepersonne = resultat.data.typeReclamation;
-          this.nif = resultat.data.nif;
-          this.adresseAssujetti = resultat.data.adresse
-          this.datas = resultat.data
-          
-          this.dataArray = [this.datas]
-
-          if (Array.isArray(this.dataArray)) {
-            this.donnees = this.dataArray;
-            console.log(this.donnees)
-
-            this.comboboxData = this.donnees.map(item => ({ id: item.id, typeReclamation: item.typeReclamation }));
-          } else {
-            console.error('Les données retournées ne sont pas un tableau.');
-          }
-          // this.serve.hide();
-          this.isLoading = false;
-        }, 5000);
-
-
-      })
-
-      // this.rechercheNumDeclara()
-
-    }
-  }
- 
-  // @ViewChild('montantContesteInput', { static: true }) montantContesteInput!: ElementRef<HTMLInputElement>;
-  //open modal
-
- 
-
   traitement() {
-    this.montant_du
-    this.montantConteste
-    this.reste_a_payer
-    this.decision = this.rechercheForm.controls.selectedValue.value
-    console.log(this.montantDu)
-    console.log(this.montant_non_constesté)
-    console.log(this.reste_a_payer)
+    this.decision = this.valeur;
+    this.date_traitment = this.currentDate
+    console.log(this.aprescalcul);
     console.log(this.decision)
+    console.log(this.date_traitment)
   }
-
 
   selectionValue(value: any) {
-    
-      if (value == 'partiel') {
-        this.decision = value
-        this.valeur_de_monant // Remplacez cette valeur par la logique appropriée pour déterminer la valeur de this.valeur_de_monant
-        console.log(this.valeur_de_monant)
-      } else if (value=='total'){
-        this.decision = value
-        console.log('total')
-        this.valeur_de_monant; // Définissez une valeur par défaut si nécessaire
-      } else
-      {
-        this.decision = value;
+
+    this.traitement();
+    this.valeur = value
+    console.log(this.valeur)
+
+    if (this.valeur == 'partiel') {
+
+      this.valeurSelectionner = this.valeur
+      console.log(this.valeurSelectionner)
+      this.montantMoins = 40;
+
+      this.aprescalcul = this.montantMoins - this.valeur_de_monant
+      if (this.aprescalcul >= 0) {
+        this.valeur_Valide = this.aprescalcul
+      } else {
+        this.valeur_Valide = 0;
       }
-     
+    } else if (this.valeur == 'total') {
+
+      this.valeurSelectionner = this.valeur
+      console.log(this.valeurSelectionner)
+      this.montantMoins = 40;
+
+      this.aprescalcul = this.montantMoins - this.valeur_de_monant
+      console.log(this.valeur_de_monant)
+    } else {
+      console.log('rejet')
+      this.valeurSelectionner = this.valeur
+
+      this.montantMoins = 40;
+
+      this.aprescalcul = this.montantMoins
+    }
   }
-
-  // subscribeToMontantChanges() {
-  //   this.rechercheForm.get('montant')?.valueChanges.subscribe((data: any) => {
-  //     console.log(data);
-  //     this.data_ = data;
-  //     this.selectionValue(this.valeur).then(() => {
-  //       this.selectElementDecision(this.item.id);
-       
-  //     });
-  //   });
-  // }
-  // selectionValue(value: any) {
-
-    
-  //   this.valeur = value
-  //   console.log(this.valeur)
-
-  //   if (this.valeur == 'partiel') {
-
-  //     this.traitement();
-  //     console.log(this.valeur)
-
-  //     console.log(this.valeur_de_monant)
-     
-  //     if (this.aprescalcul >= 0) {
-  //       this.valeur_Valide = this.aprescalcul
-  //     } else {
-  //       this.valeur_Valide = 0;
-  //     }
-  //   } else if (this.valeur == 'total') {
-
-  //     this.valeurSelectionner = this.valeur
-  //     console.log(this.valeurSelectionner)
-  //     this.montantMoins = 40;
-
-  //     this.aprescalcul = this.montantMoins - this.valeur_de_monant
-  //     console.log(this.valeur_de_monant)
-  //   } else {
-  //     console.log('rejet')
-  //     this.valeurSelectionner = this.valeur
-
-  //     this.montantMoins = 40;
-
-  //     this.aprescalcul = this.montantMoins
-  //   }
-   
-  // }
 
   // Méthode pour sélectionner un élément
   selectElement(element: any) {
@@ -387,43 +323,25 @@ export class AppComponent implements OnInit {
     })
     this.openModal();
   }
-
   // Méthode pour sélectionner un élément
   selectElementDecision(element: any) {
-   
-    const montantControl = this.rechercheForm.get('montant') as FormControl;
-    const valeur_data = this.detials_reclamation.find((i: any) => i.id === element);
-  
-    this.montantDu = valeur_data.montantDu;
-    this.montantConteste = valeur_data.montantConteste;
-    this.montantNonConteste = valeur_data.montantNonConteste
-    // Ouvrir le modal pour afficher les valeurs
+    this.apiService.getAllReclamationDetails(element).subscribe((res: any) => {
+      console.log(res);
+
+      //  const donnee = [res.data];
+      //  console.log(donnee)
+      this.montantDu = res.montantDu
+
+      console.log(this.montantDu)
+      this.rechercheNumDeclara();
+    })
     this.openModalDecision('large');
-  
-    montantControl.valueChanges.subscribe((value: any) => {
-      console.log(value); // Affiche la valeur numérique tapée dans l'input montant
-     
-      this.montant_ = value;
-    });
-  
-    montantControl.valueChanges.pipe(debounceTime(0)).subscribe(() => {
-      // Effectuer le calcul ici en utilisant les deux valeurs
-      if(this.montant_>=this.montantConteste)
-      {
-        this.reste_a_payer = "montant superieur";
-        
-      } else{
-      this.reste_a_payer = this.montantConteste - this.montant_;
-      this.montant_du = this.montantDu;
-      this.montant_non_constesté = this.montantNonConteste
-      console.log(this.reste_a_payer );}
-    });
-    this.traitement()
   }
   selectElementValidation(element: any) {
     this.apiService.getAllReclamationDetails(element).subscribe((res: any) => {
       console.log(res);
     });
+    this.openModalValidation('large');
   }
   SaveData() {
     const details: any[] = [];
@@ -464,23 +382,6 @@ export class AppComponent implements OnInit {
     console.log(request);
   }
 
-  afficher_data(id:any)
-  {
-      const value_data_ = this.informations.find((reclamation: any) => reclamation.nif === id);
-
-      if(value_data_){
-       console.log(value_data_);
-        this.nif_ = value_data_.nif
-        console.log(this.nif_);
-        this.detials_reclamation = value_data_.detailsReclamation
-        
-        console.log(this.detials_reclamation)
-      }
-
-      this.openDetail('large');
-      
-  }
-
   removeDetailEdit(referenceTitrePerception: string) {
     const index = this.resultatsRecherches.findIndex(
       (item) => item.referenceTitrePerception === referenceTitrePerception
@@ -497,33 +398,19 @@ export class AppComponent implements OnInit {
     return this.rechercheForm.get('referenceTitrePerception')?.value;
   }
  
-  get_all_detail():void{
-    this.apiService.get_all_declarations().subscribe(data =>{ 
-      console.log(data);
-      this.all_reclamation_data = data
-
-      console.log(this.all_reclamation_data)
-    })
-  }
 
 
-
-  updateValue(event: any) {
-    this.v = event.target.value;
-    console.log(this.v);
-
-    // this.montantContesteInput.nativeElement.focus();
-    this.rechercheNumDeclara()
-}
   rechercheNumDeclara() {
    
+ 
     let referenceTitrePerception: string;
-   
 
     if (typeof this.num == 'string') {
       referenceTitrePerception = this.num;
 
 
+      // if(this.donnees && this.donnees.nif == )
+      // Effectuer l'appel HTTP à l'API
       this.apiService.getAll(referenceTitrePerception).subscribe((resultat: any) => {
         if (resultat.status === 201) {
 
@@ -539,12 +426,12 @@ export class AppComponent implements OnInit {
               typedocument: resultat.data.typeDocument,
               intituleActeGenerateur: resultat.data.intituleActeGenerateur,
               avecSurcis: resultat.data.avecSurcis,
-              montant_conteste_montant_du : resultat.data.montantDu-this.v
+              montant_conteste_montant_du : resultat.data.montantDu-this.montantContesteRecuperer
             };
-          //  this.montant_conteste_montant_du = resultat.data.montantDu - this.v
+           this.montant_conteste_montant_du = resultat.data.montantDu - this.montantContesteRecuperer
               
-            // console.log(this.montant_conteste_montant_du)
-            // console.log(this.montantContesteRecuperer)
+            console.log(this.montant_conteste_montant_du)
+            console.log(this.montantContesteRecuperer)
 
             const index = this.resultatsRecherches.findIndex(
               (item) => item.referenceTitrePerception === referenceTitrePerception
@@ -570,21 +457,15 @@ export class AppComponent implements OnInit {
       });
     }
   }
-  validateMontantConteste(control: FormControl) {
-    const value = control.value;
-    const hasThreeDigits = /^\d{3,}$/.test(value); // Vérifie si la valeur contient au moins 3 chiffres
 
-    return hasThreeDigits ? null : { invalidMontantConteste: true };
-  }
   getAlldata(): void {
 
     this.apiService.getAlldata().subscribe((resultat: any) => {
       this.raisonSocial = resultat.data.raisonSocial;
       this.data = resultat.data;
       this.local_informations_liste = resultat.data
-      this.informations = resultat.data
       // this.list_reclamations = resultat.data
-      console.log(this.informations)
+      console.log(this.data)
     });
 
   }

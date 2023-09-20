@@ -36,4 +36,8 @@ export class ServiceService {
   {
     return this.http.get('http://178.18.241.223:8080/ms_reclamation/api/getAllReclamation')
   }
+  get_all_declarations():Observable<any>
+  {
+    return this.http.get('http://127.0.0.1:8000/api/liste_declaramation');
+  }
 }
